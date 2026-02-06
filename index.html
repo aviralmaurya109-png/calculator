@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phone Calculator</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+
+  .calculator {
+    background: #111;
+    padding: 20px;
+    border-radius: 25px;
+    width: 320px;
+  }
+
+  .screen {
+    background: #1c1c1c;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  #expression {
+    color: #aaa;
+    font-size: 18px;
+    text-align: right;
+    min-height: 22px;
+  }
+
+  #result {
+    color: white;
+    font-size: 38px;
+    text-align: right;
+    font-weight: bold;
+
+    /* ✅ real phone behaviour */
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  #result::-webkit-scrollbar {
+    display: none;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  button {
+    height: 55px;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    background: #333;
+    color: white;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  button:hover {
+    background: #555;
+  }
+
+  .op {
+    background: orange;
+    color: black;
+  }
+
+  .equal {
+    background: #3ddc84;
+    color: black;
+  }
+
+  .red {
+    background: #ff4d4d;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+  <div class="screen">
+    <div id="expression"></div>
+    <div id="result">0</div>
+  </div>
+
+  <div class="buttons">
+    <button class="red" onclick="clearAll()">C</button>
+    <button onclick="del()">⌫</button>
+    <button onclick="add('%')">%</button>
+    <button class="op" onclick="add('/')">÷</button>
+
+    <button onclick="add('7')">7</button>
+    <button onclick="add('8')">8</button>
+    <button onclick="add('9')">9</button>
+    <button class="op" onclick="add('*')">×</button>
+
+    <button onclick="add('4')">4</button>
+    <button onclick="add('5')">5</button>
+    <button onclick="add('6')">6</button>
+    <button class="op" onclick="add('-')">−</button>
+
+    <button onclick="add('1')">1</button>
+    <button onclick="add('2')">2</button>
+    <button onclick="add('3')">3</button>
+    <button class="op" onclick="add('+')">+</button>
+
+    <button onclick="sqrt()">√</button>
+    <button onclick="cbrt()">∛</button>
+    <button onclick="add('.')">.</button>
+    <button class="equal" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+  let expr = "";
+  const expDiv = document.getElementById("expression");
+  const resDiv = document.getElementById("result");
+
+  function updateExpression() {
+    expDiv.innerText = expr.replace(/\*/g, "×").replace(/\//g, "÷");
+  }
+
+  function add(val) {
+    expr += val;
+    updateExpression();
+  }
+
+  function clearAll() {
+    expr = "";
+    expDiv.innerText = "";
+    resDiv.innerText = "0";
+  }
+
+  function del() {
+    expr = expr.slice(0, -1);
+    updateExpression();
+  }
+
+  function calculate() {
+    try {
+      let res = eval(expr);
+      resDiv.innerText = res;
+      expr = res.toString();
+      expDiv.innerText = "";
+      resDiv.scrollLeft = resDiv.scrollWidth;
+    } catch {
+      resDiv.innerText = "Error";
+    }
+  }
+
+  function sqrt() {
+    try {
+      let res = Math.sqrt(eval(expr));
+      resDiv.innerText = res;
+      expr = res.toString();
+      expDiv.innerText = "√";
+      resDiv.scrollLeft = resDiv.scrollWidth;
+    } catch {
+      resDiv.innerText = "Error";
+    }
+  }
+
+  function cbrt() {
+    try {
+      let res = Math.cbrt(eval(expr));
+      resDiv.innerText = res;
+      expr = res.toString();
+      expDiv.innerText = "∛";
+      resDiv.scrollLeft = resDiv.scrollWidth;
+    } catch {
+      resDiv.innerText = "Error";
+    }
+  }
+</script>
+
+</body>
+</html>
