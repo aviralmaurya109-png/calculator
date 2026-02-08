@@ -2,150 +2,171 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Calculator</title>
+<title>Auto Calculator</title>
+
 <style>
-  * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+body {
+  background: #000;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .calculator {
-    background: #111;
-    padding: 20px;
-    border-radius: 25px;
-    width: 320px;
-  }
+.calculator {
+  width: 320px;
+  padding: 20px;
+  border-radius: 30px;
+  background: #0f0f0f;
+}
 
-  .display {
-    background: #000;
-    color: white;
-    font-size: 40px;
-    text-align: right;
-    padding: 20px 10px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    overflow-x: auto;
-  }
+.display {
+  background: #1c1c1c;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: white;
+}
 
-  .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
+.expression {
+  font-size: 20px;
+  text-align: right;
+  min-height: 25px;
+  opacity: 0.7;
+}
 
-  button {
-    height: 60px;
-    font-size: 22px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    background: #2a2a2a;
-    color: white;
-  }
+.result {
+  font-size: 36px;
+  text-align: right;
+  min-height: 40px;
+}
 
-  button.operator {
-    background: #ff9f0a;
-    color: white;
-  }
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 65px;
+  gap: 10px;
+}
 
-  button.clear {
-    background: #ff453a;
-  }
+button {
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+}
 
-  button.equals {
-    background: #30d158;
-    color: black;
-    grid-row: span 2;      /* ⭐ yahi magic hai */
-    border-radius: 35px;
-  }
+.dark { background: #2a2a2a; color: white; }
+.orange { background: #f5a623; color: black; }
+.red { background: #ff4d4d; color: white; }
 
-  button.zero {
-    grid-column: span 2;
-    border-radius: 35px;
-  }
+.equal {
+  background: #3ddc84;
+  color: black;
+  grid-row: span 2;
+  border-radius: 35px;
+}
 
-  button:active {
-    transform: scale(0.95);
-  }
+button:active {
+  transform: scale(0.95);
+}
 </style>
 </head>
 
 <body>
+
 <div class="calculator">
-  <div class="display" id="display">0</div>
+  <div class="display">
+    <div class="expression" id="exp"> </div>
+    <div class="result" id="res">0</div>
+  </div>
 
   <div class="buttons">
-    <button class="clear" onclick="clearDisplay()">C</button>
-    <button onclick="backspace()">⌫</button>
-    <button onclick="append('%')">%</button>
-    <button class="operator" onclick="append('/')">÷</button>
+    <button class="red" onclick="clearAll()">C</button>
+    <button class="dark" onclick="backspace()">⌫</button>
+    <button class="dark" onclick="append('%')">%</button>
+    <button class="orange" onclick="append('/')">÷</button>
 
-    <button onclick="append('7')">7</button>
-    <button onclick="append('8')">8</button>
-    <button onclick="append('9')">9</button>
-    <button class="operator" onclick="append('*')">×</button>
+    <button class="dark" onclick="append('7')">7</button>
+    <button class="dark" onclick="append('8')">8</button>
+    <button class="dark" onclick="append('9')">9</button>
+    <button class="orange" onclick="append('*')">×</button>
 
-    <button onclick="append('4')">4</button>
-    <button onclick="append('5')">5</button>
-    <button onclick="append('6')">6</button>
-    <button class="operator" onclick="append('-')">−</button>
+    <button class="dark" onclick="append('4')">4</button>
+    <button class="dark" onclick="append('5')">5</button>
+    <button class="dark" onclick="append('6')">6</button>
+    <button class="orange" onclick="append('-')">−</button>
 
-    <button onclick="append('1')">1</button>
-    <button onclick="append('2')">2</button>
-    <button onclick="append('3')">3</button>
-    <button onclick="append('z')">z</button>
-    <button class="operator" onclick="append('+')">+</button>
+    <button class="dark" onclick="append('1')">1</button>
+    <button class="dark" onclick="append('2')">2</button>
+    <button class="dark" onclick="append('3')">3</button>
+    <button class="dark" onclick="append('0')">0</button>
 
-    <button class="zero" onclick="append('0')">0</button>
-    <button onclick="append('.')">.</button>
-    <button class="equals" onclick="calculate()">=</button>
+    <button class="orange" onclick="append('+')">+</button>
+    <button class="dark" onclick="sqrt()">√</button>
+    <button class="dark" onclick="cbrt()">∛</button>
+    <button class="dark" onclick="append('.')">.</button>
+
+    <button class="equal" onclick="finalAnswer()">=</button>
   </div>
 </div>
 
 <script>
-  let display = document.getElementById("display");
+let expression = "";
 
-  function append(value) {
-    if (display.innerText === "0") {
-      display.innerText = value;
-    } else {
-      display.innerText += value;
+function updateDisplay() {
+  document.getElementById("exp").innerText = expression;
+
+  try {
+    if (expression.trim() === "") {
+      document.getElementById("res").innerText = "0";
+      return;
     }
+    let result = eval(expression);
+    document.getElementById("res").innerText = result;
+  } catch {
+    document.getElementById("res").innerText = "";
   }
+}
 
-  function clearDisplay() {
-    display.innerText = "0";
-  }
+function append(val) {
+  expression += val;
+  updateDisplay();
+}
 
-  function backspace() {
-    display.innerText = display.innerText.slice(0, -1);
-    if (display.innerText === "")_toggleZero();
-  }
+function clearAll() {
+  expression = "";
+  updateDisplay();
+}
 
-  function _toggleZero() {
-    display.innerText = "0";
-  }
+function backspace() {
+  expression = expression.slice(0, -1);
+  updateDisplay();
+}
 
-  function calculate() {
-    try {
-      display.innerText = eval(display.innerText);
-    } catch {
-      display.innerText = "Error";
-    }
+function sqrt() {
+  expression = "Math.sqrt(" + expression + ")";
+  updateDisplay();
+}
+
+function cbrt() {
+  expression = "Math.cbrt(" + expression + ")";
+  updateDisplay();
+}
+
+function finalAnswer() {
+  try {
+    expression = eval(expression).toString();
+    updateDisplay();
+  } catch {
+    document.getElementById("res").innerText = "Error";
   }
+}
 </script>
+
 </body>
 </html>
-
-
-
-
